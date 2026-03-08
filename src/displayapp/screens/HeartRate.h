@@ -12,6 +12,8 @@
 namespace Pinetime {
   namespace Controllers {
     class HeartRateController;
+    class DateTime;
+    class Settings;
   }
 
   namespace Applications {
@@ -19,22 +21,46 @@ namespace Pinetime {
 
       class HeartRate : public Screen {
       public:
-        HeartRate(Controllers::HeartRateController& HeartRateController, System::SystemTask& systemTask);
+        HeartRate(Controllers::HeartRateController& heartRateController,
+                  Controllers::DateTime& dateTimeController,
+                  Controllers::Settings& settingsController,
+                  System::SystemTask& systemTask);
         ~HeartRate() override;
 
         void Refresh() override;
 
         void OnStartStopEvent(lv_event_t event);
+        bool OnTouchEvent(TouchEvents event) override;
 
       private:
         Controllers::HeartRateController& heartRateController;
+        Controllers::DateTime& dateTimeController;
+        Controllers::Settings& settingsController;
         Pinetime::System::WakeLock wakeLock;
+
+        enum class View { Main, Chart };
+        View currentView = View::Main;
+        uint8_t chartPageOffset = 0;
+
+        static constexpr uint8_t chartPoints = 24;
+        static constexpr uint8_t pointsPerPage = 24;
+
+        void CreateMainView();
+        void CreateChartView();
+        void DestroyCurrentView();
         void UpdateStartStopButton(bool isRunning);
-        lv_obj_t* label_hr;
-        lv_obj_t* label_bpm;
-        lv_obj_t* label_status;
-        lv_obj_t* btn_startStop;
-        lv_obj_t* label_startStop;
+        void PopulateChart();
+
+        lv_obj_t* label_hr = nullptr;
+        lv_obj_t* label_bpm = nullptr;
+        lv_obj_t* label_status = nullptr;
+        lv_obj_t* btn_startStop = nullptr;
+        lv_obj_t* label_startStop = nullptr;
+
+        lv_obj_t* chart = nullptr;
+        lv_chart_series_t* chartSeries = nullptr;
+        lv_obj_t* chartTitle = nullptr;
+        lv_obj_t* chartTimeLabel = nullptr;
 
         lv_task_t* taskRefresh;
       };
@@ -46,7 +72,10 @@ namespace Pinetime {
       static constexpr const char* icon = Screens::Symbols::heartBeat;
 
       static Screens::Screen* Create(AppControllers& controllers) {
-        return new Screens::HeartRate(controllers.heartRateController, *controllers.systemTask);
+        return new Screens::HeartRate(controllers.heartRateController,
+                                     controllers.dateTimeController,
+                                     controllers.settingsController,
+                                     *controllers.systemTask);
       };
 
       static bool IsAvailable(Pinetime::Controllers::FS& /*filesystem*/) {

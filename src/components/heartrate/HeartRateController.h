@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <components/ble/HeartRateService.h>
+#include "components/heartrate/HeartRateHistory.h"
 
 namespace Pinetime {
   namespace Applications {
@@ -17,7 +18,7 @@ namespace Pinetime {
     public:
       enum class States : uint8_t { Stopped, NotEnoughData, NoTouch, Running };
 
-      HeartRateController() = default;
+      HeartRateController(Controllers::FS& fs, Controllers::DateTime& dateTime);
       void Enable();
       void Disable();
       void Update(States newState, uint8_t heartRate);
@@ -32,13 +33,24 @@ namespace Pinetime {
         return heartRate;
       }
 
+      uint32_t LastMeasurementTime() const {
+        return lastMeasurementTime;
+      }
+
+      HeartRateHistory& GetHistory() {
+        return history;
+      }
+
       void SetService(Pinetime::Controllers::HeartRateService* service);
 
     private:
       Applications::HeartRateTask* task = nullptr;
       States state = States::Stopped;
       uint8_t heartRate = 0;
+      uint32_t lastMeasurementTime = 0;
       Pinetime::Controllers::HeartRateService* service = nullptr;
+      Controllers::DateTime& dateTime;
+      HeartRateHistory history;
     };
   }
 }

@@ -465,6 +465,7 @@ list(APPEND SOURCE_FILES
         components/ble/ImmediateAlertService.cpp
         components/ble/ServiceDiscovery.cpp
         components/ble/HeartRateService.cpp
+        components/ble/HeartRateHistoryService.cpp
         components/ble/MotionService.cpp
         components/firmwarevalidator/FirmwareValidator.cpp
         components/motor/MotorController.cpp
@@ -488,6 +489,7 @@ list(APPEND SOURCE_FILES
 
         heartratetask/HeartRateTask.cpp
         components/heartrate/HeartRateController.cpp
+        components/heartrate/HeartRateHistory.cpp
         components/heartrate/Ppg.cpp
 
         buttonhandler/ButtonHandler.cpp
@@ -536,6 +538,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         components/ble/ServiceDiscovery.cpp
         components/ble/NavigationService.cpp
         components/ble/HeartRateService.cpp
+        components/ble/HeartRateHistoryService.cpp
         components/ble/MotionService.cpp
         components/firmwarevalidator/FirmwareValidator.cpp
         components/settings/Settings.cpp
@@ -553,6 +556,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         drivers/TwiMaster.cpp
         components/rle/RleDecoder.cpp
         components/heartrate/HeartRateController.cpp
+        components/heartrate/HeartRateHistory.cpp
         heartratetask/HeartRateTask.cpp
         components/heartrate/Ppg.cpp
 
@@ -656,6 +660,7 @@ set(INCLUDE_FILES
         components/ble/ServiceDiscovery.h
         components/ble/BleClient.h
         components/ble/HeartRateService.h
+        components/ble/HeartRateHistoryService.h
         components/ble/MotionService.h
         components/ble/SimpleWeatherService.h
         components/settings/Settings.h
@@ -675,6 +680,7 @@ set(INCLUDE_FILES
         heartratetask/HeartRateTask.h
         components/heartrate/Ppg.h
         components/heartrate/HeartRateController.h
+        components/heartrate/HeartRateHistory.h
         libs/arduinoFFT/src/arduinoFFT.h
         libs/arduinoFFT/src/defs.h
         libs/arduinoFFT/src/types.h

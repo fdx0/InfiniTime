@@ -29,12 +29,21 @@ namespace Pinetime {
       void PushMessage(Messages msg);
 
     private:
-      enum class States : uint8_t { Disabled, Waiting, BackgroundMeasuring, ForegroundMeasuring };
+      enum class States : uint8_t {
+        Disabled,
+        Waiting,
+        BackgroundMeasuring,
+        ForegroundMeasuring,
+        ContinuousMeasuring,
+        ContinuousPaused
+      };
+
       static void Process(void* instance);
       void HandleSensorData();
       void StartMeasurement();
       void StopMeasurement();
 
+      [[nodiscard]] bool IsContinuousMode() const;
       [[nodiscard]] bool BackgroundMeasurementNeeded() const;
       [[nodiscard]] std::optional<TickType_t> BackgroundMeasurementInterval() const;
       TickType_t CurrentTaskDelay();
@@ -51,6 +60,10 @@ namespace Pinetime {
       Controllers::Ppg ppg;
       TickType_t lastMeasurementTime;
       TickType_t measurementStartTime;
+      TickType_t contactLostTime = 0;
+
+      static constexpr TickType_t contactRetryDelay =
+        30 * configTICK_RATE_HZ;
     };
 
   }
